@@ -1,0 +1,5 @@
+apiVersion: v2
+name: worklog-police
+version: 1.0.0
+appVersion: 1.0.0
+description: Bot for tracking who don't write worklog in jira

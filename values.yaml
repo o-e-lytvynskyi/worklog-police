@@ -1,0 +1,43 @@
+slack:
+  thread:
+    enabled: 0
+    msg_to_find: ""
+# if you want to post worklog-police message in thread of some message
+# enabled: 1 - in thread
+# msg_to_find - find message with content
+  token: ""
+  channel:
+    dev: ""
+    prod: ""
+  bot_id: ""
+  repeat: 0
+# 0 - to update first message
+# 1 - repeat each time message (multi-noisy tagging)
+
+jira:
+  domain: ""
+  user: ""
+  token: ""
+  time_to_trigger: 480
+  users: []
+#    - email: someone@example.com
+#      id: <JIRA-USER-ID>
+#      slack_id: <SLACK-USER-ID>
+#      active: 1
+# active mean if this user will be tagged
+# 1 - true, 0 - false
+
+debug: 0
+dry_run: 0
+
+cronjob:
+  enabled: false
+  image:
+    repository: python
+    tag: 3.12.0a7-alpine3.17
+    imagePullPolicy: IfNotPresent
+  schedule: "0,30 16-17 * * *"
+# schedule: "0,30 16-17 * * *"
+# every day from 19:00 to 21:00 every 30 minutes
+# schedule: "30,0 16-17 * * *"
+# every day from 19:30 to 21:00 every 30 minutes

@@ -1,0 +1,34 @@
+{
+  "slack": {
+    "thread": {
+      "enabled": {{ .Values.slack.thread.enabled }},
+      "msg_to_find": "{{ .Values.slack.thread.msg_to_find }}"
+    },
+    "token": "",
+    "channel": {
+      "dev": "{{ .Values.slack.channel.dev }}",
+      "prod": "{{ .Values.slack.channel.prod }}"
+    },
+    "bot_id": "{{ .Values.slack.bot_id }}",
+    "repeat": {{ .Values.slack.repeat }}
+  },
+  "jira": {
+    "domain": "{{ .Values.jira.domain }}",
+    "user": "{{ .Values.jira.user }}",
+    "token": "",
+    "time_to_trigger": {{ .Values.jira.time_to_trigger }},
+    "worklog_date": "{{ .Values.jira.worklog_date }}"
+  },
+  "debug": {{ .Values.debug }},
+  "dry_run": {{ .Values.dry_run }},
+  {{- $users := .Values.jira.users -}}
+  "users": [
+{{- range $index, $user := $users -}}
+    {
+      "email": "{{ $user.email }}",
+      "id": "{{ $user.id }}",
+      "slack_id": "{{ $user.slack_id }}",
+      "active": {{ $user.active }}
+    }{{- if ne $index (sub (len $users) 1) -}},{{- end -}}{{- end -}}
+  ]
+}

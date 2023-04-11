@@ -1,0 +1,13 @@
+{{- if and .Values.jira.token .Values.slack.token }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: "{{ .Release.Name }}-tokens"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: worklog-police
+type: Opaque
+data:
+  jira_token: {{ .Values.jira.token | b64enc | quote }}
+  slack_token: {{ .Values.slack.token | b64enc | quote }}
+{{- end }}
