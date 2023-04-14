@@ -92,7 +92,7 @@ def slack(message, react):
                 if msg['text'] == config['slack']['thread']['msg_to_find']:
                     ts = datetime.datetime.fromtimestamp(float(msg['ts']))
                     if ts.day == datetime.datetime.today().day and not config['dry_run']:
-                        if 'reply_count' in msg and not config['slack']['repeat']:
+                        if 'reply_count' in msg:
                             if msg['reply_count'] != 0:
                                 if_i_wrote = requests.request("POST", f"https://slack.com/api/conversations.replies", headers={"Content-type": "application/x-www-form-urlencoded"},
                                                               data={"channel": channel_id, "token": slack_token, "ts": msg['thread_ts']})
@@ -101,11 +101,16 @@ def slack(message, react):
 
                                     if 'user' in rep_msg:
                                         if rep_msg['user'] == config['slack']['bot_id']:
-                                            send_resp = requests.request("POST", f"https://slack.com/api/chat.update", headers={"Content-type": "application/x-www-form-urlencoded"},
-                                                                         data={"channel": channel_id, "token": slack_token, "ts": rep_msg['ts'], "text": message, "link_names": 1})
-                                            send_resp = json.loads(send_resp.text)
+                                            if config['slack']['repeat']:
+                                                del_resp = requests.request("POST", f"https://slack.com/api/chat.delete", headers={"Content-type": "application/x-www-form-urlencoded"},
+                                                                             data={"channel": channel_id, "token": slack_token, "ts": rep_msg['ts']})
+                                                logging.info(f'Successfully deleted message with ts: {rep_msg["ts"]} in channel {channel_id} under thread with ts: {msg["ts"]}')
+                                            else:
+                                                send_resp = requests.request("POST", f"https://slack.com/api/chat.update", headers={"Content-type": "application/x-www-form-urlencoded"},
+                                                                             data={"channel": channel_id, "token": slack_token, "ts": rep_msg['ts'], "text": message, "link_names": 1})
+                                                send_resp = json.loads(send_resp.text)
 
-                                            logging.info(f'Successfully updated message with ts: {rep_msg["ts"]} in channel {channel_id} under thread with ts: {msg["ts"]}')
+                                                logging.info(f'Successfully updated message with ts: {rep_msg["ts"]} in channel {channel_id} under thread with ts: {msg["ts"]}')
                         if not send_resp:
                             send_resp = requests.request("POST", f"https://slack.com/api/chat.postMessage", headers={"Content-type": "application/x-www-form-urlencoded"},
                                                          data={"channel": channel_id, "token": slack_token, "thread_ts": msg['ts'], "text": message, "link_names": 1})
@@ -117,15 +122,20 @@ def slack(message, react):
         if_i_wrote = requests.request("POST", f"https://slack.com/api/conversations.history", headers={"Content-type": "application/x-www-form-urlencoded"},
                                       data={"channel": channel_id, "token": slack_token})
         if_i_wrote = json.loads(if_i_wrote.text)
-        if "messages" in if_i_wrote and not config['slack']['repeat']:
+        if "messages" in if_i_wrote:
             for msg in if_i_wrote['messages']:
                 ts = datetime.datetime.fromtimestamp(float(msg['ts']))
                 if ts.day == datetime.datetime.today().day and not config['dry_run']:
                     if msg['user'] == config['slack']['bot_id']:
-                        send_resp = requests.request("POST", f"https://slack.com/api/chat.update", headers={"Content-type": "application/x-www-form-urlencoded"},
-                                                     data={"channel": channel_id, "token": slack_token, "ts": msg['ts'], "text": message, "link_names": 1})
-                        send_resp = json.loads(send_resp.text)
-                        logging.info(f'Successfully updated message with ts: {msg["ts"]} in channel {channel_id}')
+                        if  config['slack']['repeat']:
+                            del_resp = requests.request("POST", f"https://slack.com/api/chat.delete", headers={"Content-type": "application/x-www-form-urlencoded"},
+                                                        data={"channel": channel_id, "token": slack_token, "ts": msg['ts']})
+                            logging.info(f'Successfully deleted message with ts: {msg["ts"]} in channel {channel_id}')
+                        else:
+                            send_resp = requests.request("POST", f"https://slack.com/api/chat.update", headers={"Content-type": "application/x-www-form-urlencoded"},
+                                                         data={"channel": channel_id, "token": slack_token, "ts": msg['ts'], "text": message, "link_names": 1})
+                            send_resp = json.loads(send_resp.text)
+                            logging.info(f'Successfully updated message with ts: {msg["ts"]} in channel {channel_id}')
                         break
         if not send_resp:
             send_resp = requests.request("POST", f"https://slack.com/api/chat.postMessage", headers={"Content-type": "application/x-www-form-urlencoded"},
