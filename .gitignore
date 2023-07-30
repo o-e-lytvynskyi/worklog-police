@@ -2,3 +2,7 @@
 .idea_modules/
 .idea/
 tmp/
+/files/config_local.json
+/files/db
+/files/__pycache__/*
+/files/__pycache__/
