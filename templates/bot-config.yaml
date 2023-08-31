@@ -7,4 +7,5 @@ metadata:
     app: worklog-police
 data:
   {{- tpl (.Files.Glob "files/config.json").AsConfig . | nindent 2 }}
-  {{- tpl (.Files.Glob "files/worklog-police.py").AsConfig . | nindent 2 }}
+  {{- tpl (.Files.Glob "files/roles.json").AsConfig . | nindent 2 }}
+  {{- tpl (.Files.Glob "files/*.py").AsConfig . | nindent 2 }}

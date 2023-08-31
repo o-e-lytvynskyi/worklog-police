@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: worklog-police
+          image: {{ .Values.cronjob.image.repository }}:{{ .Values.cronjob.image.tag }}
+          imagePullPolicy: {{ .Values.cronjob.image.imagePullPolicy }}
+          env:
+            - name: jira_api_token
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Release.Name }}-tokens"
+                  key: jira_token
+            - name: slack_api_token
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Release.Name }}-tokens"
+                  key: slack_token
+          volumeMounts:
+            - name: configuration
+              mountPath: "/proj"
+          command:
+            - /bin/sh
+            - -c
+            - |
+              pip install slack_bolt slack_sdk pandas requests tqdm
+{{/*              sleep 600*/}}
+              cd /proj && python slack.py
+      volumes:
+        - name: configuration
+          configMap:
+            name: "{{ .Release.Name }}-configuration"
+

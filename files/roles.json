@@ -1,0 +1,32 @@
+{
+  "admin": {
+    "add_dayoff": {
+      "me": 1,
+      "other": 1
+    },
+    "remove_dayoff": {
+      "me": 1,
+      "other": 1
+    },
+    "make_report_table":  {
+      "me": 1,
+      "other": 1,
+      "limit": 99
+    }
+  },
+  "user": {
+    "add_dayoff": {
+      "me": 1,
+      "other": 0
+    },
+    "remove_dayoff": {
+      "me": 1,
+      "other": 0
+    },
+    "make_report_table":  {
+      "me": 1,
+      "other": 0,
+      "limit": 5
+    }
+  }
+}

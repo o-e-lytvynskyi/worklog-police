@@ -34,7 +34,7 @@ cronjob:
   enabled: false
   image:
     repository: python
-    tag: 3.12.0a7-alpine3.17
+    tag: 3.10-alpine
     imagePullPolicy: IfNotPresent
   schedule: "0,30 16-17 * * *"
 # schedule: "0,30 16-17 * * *"

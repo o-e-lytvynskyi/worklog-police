@@ -19,16 +19,22 @@
     "time_to_trigger": {{ .Values.jira.time_to_trigger }},
     "worklog_date": "{{ .Values.jira.worklog_date }}"
   },
+  "admins": [
+    "U03B71XDPB2",
+    "U01TSEXRSNA"
+  ],
   "debug": {{ .Values.debug }},
   "dry_run": {{ .Values.dry_run }},
-  {{- $users := .Values.jira.users -}}
+{{- $users := .Values.jira.users -}}
   "users": [
 {{- range $index, $user := $users -}}
     {
       "email": "{{ $user.email }}",
       "id": "{{ $user.id }}",
       "slack_id": "{{ $user.slack_id }}",
-      "active": {{ $user.active }}
+      "active": {{ $user.active }},
+      "role": "{{ $user.role }}",
+      "slack_name": "{{ $user.slack_name }}"
     }{{- if ne $index (sub (len $users) 1) -}},{{- end -}}{{- end -}}
   ]
 }
