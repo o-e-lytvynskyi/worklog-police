@@ -10,4 +10,5 @@ type: Opaque
 data:
   jira_token: {{ .Values.jira.token | b64enc | quote }}
   slack_token: {{ .Values.slack.token | b64enc | quote }}
+  slack_bot_token: {{ .Values.slack.token_bot | b64enc | quote }}
 {{- end }}

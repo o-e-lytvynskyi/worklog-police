@@ -1,4 +1,3 @@
-# xapp-1-A05L3QH639V-5695462729973-f5305cd6d37287f1083028e67690a4c42c2a57f3bf90304eb2186a66f4973f52
 from datetime import datetime, timedelta
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
@@ -17,8 +16,8 @@ import os
 
 version = 0.2
 
-SLACK_BOT_TOKEN = ""
-SLACK_APP_TOKEN = ""
+SLACK_BOT_TOKEN = os.environ['slack_api_token']
+SLACK_APP_TOKEN = os.environ['slack_bot_api_token']
 client = WebClient(token=SLACK_BOT_TOKEN)
 app = App(token=SLACK_BOT_TOKEN)
 

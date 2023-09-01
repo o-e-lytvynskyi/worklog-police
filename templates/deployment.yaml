@@ -30,6 +30,11 @@ spec:
                 secretKeyRef:
                   name: "{{ .Release.Name }}-tokens"
                   key: slack_token
+            - name: slack_bot_api_token
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Release.Name }}-tokens"
+                  key: slack_bot_token
           volumeMounts:
             - name: configuration
               mountPath: "/proj"
